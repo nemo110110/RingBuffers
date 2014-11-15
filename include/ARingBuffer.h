@@ -2,9 +2,17 @@
 #define ARINGBUFFER_H
 
 
+#include <list>
+
+template<class T> class ARingBufferWriter;
+template<class T> class ARingBufferReader;
+
 template<class T>
 class ARingBuffer
 {
+    friend class ARingBufferWriter<T>;
+    friend class ARingBufferReader<T>;
+
     public:
         ARingBuffer<T>(int capacity);
         ARingBuffer<T>(T* buffer, int capacity);
@@ -13,13 +21,14 @@ class ARingBuffer
         ARingBuffer<T>(const ARingBuffer& other);
         ARingBuffer<T>& operator=(const ARingBuffer& other);
 
-        virtual ARingBufferWriter<T> * getWriter() const = 0;
+        virtual ARingBufferWriter<T> * getWriter() = 0;
 
     private:
         const bool isBufferOwned;
 
     protected:
-        T* const buffer;
+        T * const buffer;
+        std::list<ARingBufferReader<T>*> readers;
 
     public:
         const int capacity;
@@ -41,12 +50,6 @@ ARingBuffer<T>::~ARingBuffer()
     if (isBufferOwned) {
         delete[] buffer;
     }
-}
-
-template<class T>
-int ARingBuffer<T>::getCapacity() const
-{
-    return capacity;
 }
 
 #endif // ARINGBUFFER_H

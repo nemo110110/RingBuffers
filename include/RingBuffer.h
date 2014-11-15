@@ -3,13 +3,14 @@
 
 
 #include "ARingBuffer.h"
+#include "RingBufferWriter.h"
+#include "RingBufferReader.h"
 
 
-template<class T> class RingBufferWriter;
 template<class T> class RingBufferReader;
 
 template<class T>
-class RingBuffer
+class RingBuffer : public ARingBuffer<T>
 {
     friend class RingBufferWriter<T>;
     friend class RingBufferReader<T>;
@@ -18,15 +19,11 @@ class RingBuffer
         RingBuffer<T>(int capacity);
         RingBuffer<T>(T* buffer, int capacity);
 
-        RingBufferWriter<T> * getWriter() const;
+        RingBufferWriter<T> * getWriter() override;
 
     private:
         RingBufferWriter<T> writer;
 };
-
-
-#include "RingBufferWriter.h"
-#include "RingBufferReader.h"
 
 
 template<class T>
@@ -40,7 +37,7 @@ RingBuffer<T>::RingBuffer(T* buffer, int capacity) :
 { }
 
 template<class T>
-RingBufferWriter<T> * RingBuffer<T>::getWriter() const
+RingBufferWriter<T> * RingBuffer<T>::getWriter()
 {
     return &writer;
 }

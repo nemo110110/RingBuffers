@@ -33,7 +33,37 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="include/ARingBuffer.h" />
+		<Unit filename="include/ARingBuffer.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/ARingBufferReader.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/ARingBufferWriter.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/IRingBufferAccessor.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/RingBuffer.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/RingBufferReader.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/RingBufferWriter.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/SharedRingBuffer.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/SharedRingBufferReader.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="include/SharedRingBufferWriter.h">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="test_RingBuffer.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

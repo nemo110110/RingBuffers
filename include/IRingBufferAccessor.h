@@ -12,8 +12,9 @@ class IRingBufferAccessor
         virtual int available() const = 0;
 
     protected:
-    	// TODO Replace with simple ARingBuffer<T>* data member?
+    	// TODO Replace with simple ARingBuffer<T> * const data member?
         virtual ARingBuffer<T> *ringBuffer() const = 0;
+
         virtual void acquireResources(int size) = 0;
         virtual void releaseResources(int size) = 0;
 };

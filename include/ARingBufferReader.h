@@ -4,89 +4,93 @@
 
 #include "IRingBufferAccessor.h"
 
+template<class T> class ARingBuffer;
+
 template<class T>
 class ARingBufferReader : public IRingBufferAccessor<T>
 {
     public:
-        ARingBufferReader<T>();
+        ARingBufferReader<T>(ARingBuffer<T> *rb);
 
         virtual ~ARingBufferReader<T>() = default;
         ARingBufferReader<T>(const ARingBufferReader& other);
         ARingBufferReader<T>& operator=(const ARingBufferReader& other);
 
     public:
-        int available() const override;
+        T peek() const;
+        T at(int index) const;
 
         T dequeue();
-        T peek();
-        T at(int index) const;
-        void read(const T *target, int count);
+        void read(T *target, int count);
         void skip(int count);
 
     protected:
         int readIndex;
 };
 
-template<class T>
-ARingBufferReader<T>::ARingBufferReader() :
-    readIndex(0)
-{ }
+
+#include "ARingBuffer.h"
+#include "ARingBufferWriter.h"
+#include <list>
+
 
 template<class T>
-int ARingBufferReader<T>::available() const
+ARingBufferReader<T>::ARingBufferReader(ARingBuffer<T> *rb) :
+    readIndex(rb->getWriter()->writeIndex)
 {
-    ARingBuffer<T> *rb = ringBuffer();
-    return (rb->getWriter()->writeIndex - readIndex + rb->capacity) % rb->capacity;
-}
-
-template<class T>
-T ARingBufferReader<T>::at(int index) const
-{
-    ARingBuffer<T> *rb = ringBuffer();
-    return rb->buffer[(readIndex + index) % rb->capacity];
-}
-
-template<class T>
-T ARingBufferReader<T>::dequeue() const
-{
-    acquireResources(1);
-
-    T* returnValue = &(ringBuffer()->buffer[readIndex]);
-    readIndex = (readIndex + 1) % capacity;
-
-    releaseResources(1);
-
-    return *returnValue;
+    rb->readers.push_back(this);
 }
 
 template<class T>
 T ARingBufferReader<T>::peek() const
 {
-    return ringBuffer()->buffer[readIndex];
+    return this->ringBuffer()->buffer[readIndex];
 }
 
 template<class T>
-void ARingBufferReader<T>::read(const T *target, int count) const
+T ARingBufferReader<T>::at(int index) const
 {
-    T *buffer = ringBuffer()->buffer;
-    int capacity = ringBuffer()->capacity;
+    ARingBuffer<T> *rb = this->ringBuffer();
+    return rb->buffer[(readIndex + index) % rb->capacity];
+}
 
-    acquireResources(count);
+template<class T>
+T ARingBufferReader<T>::dequeue()
+{
+    this->acquireResources(1);
+
+    T* returnValue = &(this->ringBuffer()->buffer[readIndex]);
+    readIndex = (readIndex + 1) % this->ringBuffer()->capacity;
+
+    this->releaseResources(1);
+
+    return *returnValue;
+}
+
+template<class T>
+void ARingBufferReader<T>::read(T *target, int count)
+{
+    T *buffer = this->ringBuffer()->buffer;
+    int capacity = this->ringBuffer()->capacity;
+
+    this->acquireResources(count);
 
     for (int i = 0; i < count; ++i) {
         target[i] = buffer[(readIndex + i) % capacity];
     }
     readIndex = (readIndex + count) % capacity;
 
-    releaseResources(count);
+    this->releaseResources(count);
 }
 
 template<class T>
-void ARingBufferReader<T>::skip(int count) const
+void ARingBufferReader<T>::skip(int count)
 {
-    acquireResources(count);
+    this->acquireResources(count);
+
     readIndex += count;
-    releaseResources(count);
+
+    this->releaseResources(count);
 }
 
 #endif // ARINGBUFFERREADER_H
