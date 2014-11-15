@@ -35,7 +35,10 @@ int main(int argc, char const *argv[])
 	int *str_array = new int[bufferSize];
 	reader.read(str_array, reader.available());
 	cout << "OK" << endl;
+
 	cout << "Number of elements now in the RingBuffer: " << reader.available() << endl;
+
+	delete[] str_array;
 
 	return 0;
 }
