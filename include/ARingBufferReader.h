@@ -4,6 +4,7 @@
 
 #include "IRingBufferAccessor.h"
 
+
 template<class T> class ARingBuffer;
 
 template<class T>

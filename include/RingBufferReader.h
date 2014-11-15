@@ -15,7 +15,8 @@ class RingBufferReader : public ARingBufferReader<T>
     friend class RingBufferWriter<T>;
 
     public:
-        RingBufferReader<T>(RingBuffer<T> *ringBuffer);
+        RingBufferReader<T>(RingBuffer<T> *rb);
+
         int available() const override;
 
     protected:
@@ -27,6 +28,7 @@ class RingBufferReader : public ARingBufferReader<T>
 
     private:
         RingBuffer<T> *rb;
+
         int ahead;
 };
 

@@ -45,13 +45,11 @@ template<class T>
 int RingBufferWriter<T>::available() const
 {
     std::list<ARingBufferReader<T>*> *readers = &rb->readers;
-    RingBufferReader<T> *r;
 
     int min = this->ringBuffer()->capacity;
     int current;
     for (typename std::list<ARingBufferReader<T>*>::const_iterator it = readers->begin(); it != readers->end(); ++it) {
-        r = static_cast<RingBufferReader<T>*>(*it);
-        current = rb->capacity - r->ahead;
+        current = rb->capacity - static_cast<RingBufferReader<T>*>(*it)->ahead;
         if (current < min) {
             min = current;
         }
@@ -63,13 +61,14 @@ template<class T>
 void RingBufferWriter<T>::acquireResources(int count)
 {
     std::list<ARingBufferReader<T>*> *readers = &rb->readers;
-    RingBufferReader<T> *r;
-    for (typename std::list<ARingBufferReader<T>*>::const_iterator it = readers->begin(); it != readers->end(); ++it) {
-        r = static_cast<RingBufferReader<T>*>(*it);
-        if (rb->capacity - r->ahead < count) {
+
+    RingBufferReader<T> *reader;
+    for (typename std::list<ARingBufferReader<T>*>::iterator it = readers->begin(); it != readers->end(); ++it) {
+        reader = static_cast<RingBufferReader<T>*>(*it);
+        if (rb->capacity - reader->ahead < count) {
             throw std::runtime_error("Insufficient available space in RingBuffer for RingBufferWriter resource acquisition");
         }
-        r->ahead += count;
+        reader->ahead += count;
     }
 }
 

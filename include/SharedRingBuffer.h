@@ -4,6 +4,7 @@
 
 #include "ARingBuffer.h"
 #include "SharedRingBufferWriter.h"
+#include "SharedRingBufferReader.h"
 
 
 template<class T> class SharedRingBufferReader;
@@ -36,7 +37,7 @@ SharedRingBuffer<T>::SharedRingBuffer(T* buffer, int capacity) :
 { }
 
 template<class T>
-SharedRingBufferWriter<T> * SharedRingBuffer<T>::getWriter() const
+SharedRingBufferWriter<T> * SharedRingBuffer<T>::getWriter()
 {
     return &writer;
 }

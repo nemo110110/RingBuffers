@@ -6,8 +6,8 @@
 #include <mutex>
 
 
-template<class T> SharedRingBuffer;
-template<class T> SharedRingBufferReader;
+template<class T> class SharedRingBuffer;
+template<class T> class SharedRingBufferReader;
 
 template<class T>
 class SharedRingBufferWriter : public ARingBufferWriter<T>
@@ -18,14 +18,18 @@ class SharedRingBufferWriter : public ARingBufferWriter<T>
     private:
         SharedRingBufferWriter<T>(SharedRingBuffer<T> *rb);
 
-    protected:
         int available() const override;
+
+    protected:
+        // TODO Replace with simple ARingBuffer<T>* data member?
+        inline SharedRingBuffer<T> *ringBuffer() const override { return rb; }
 
         void acquireResources(int count) override;
         void releaseResources(int count) override;
 
     private:
         SharedRingBuffer<T> * const rb;
+
         std::mutex mutex;
 };
 
@@ -33,6 +37,7 @@ class SharedRingBufferWriter : public ARingBufferWriter<T>
 #include "SharedRingBuffer.h"
 #include "SharedRingBufferReader.h"
 #include <list>
+#include "semaphore.h"
 
 
 template<class T>
@@ -43,11 +48,12 @@ SharedRingBufferWriter<T>::SharedRingBufferWriter(SharedRingBuffer<T> *rb) :
 template<class T>
 int SharedRingBufferWriter<T>::available() const
 {
-    std::list<SharedRingBufferReader<T>*> &readers = static_cast<std::list<SharedRingBufferReader<T>*> >(rb->readers);
-    int min = this->ringBuffer()->capacity;
+    int min = rb->capacity;
     int current;
-    for (std::list<SharedRingBufferReader<T>*>::const_iterator it = readers.begin(); it < readers.end(); ++it) {
-        current = (*it)->behind.available();
+
+    std::list<ARingBufferReader<T>*>* readers = &rb->readers;
+    for (typename std::list<ARingBufferReader<T>*>::const_iterator it = readers->begin(); it != readers->end(); ++it) {
+        current = static_cast<SharedRingBufferReader<T>*>(*it)->behind.available();
         if (current < min) {
             min = current;
         }
@@ -58,19 +64,23 @@ int SharedRingBufferWriter<T>::available() const
 template<class T>
 void SharedRingBufferWriter<T>::acquireResources(int count)
 {
-    std::list<SharedRingBufferReader<T>*> &readers = static_cast<std::list<SharedRingBufferReader<T>*> >(rb->readers);
-    for (std::list<SharedRingBufferReader<T>*>::const_iterator it = readers.begin(); it < readers.end(); ++it) {
-        (*it)->behind.acquire(count);
+    mutex.lock();
+
+    std::list<ARingBufferReader<T>*>* readers = &rb->readers;
+    for (typename std::list<ARingBufferReader<T>*>::iterator it = readers->begin(); it != readers->end(); ++it) {
+        static_cast<SharedRingBufferReader<T>*>(*it)->behind.wait(count);
     }
 }
 
 template<class T>
 void SharedRingBufferWriter<T>::releaseResources(int count)
 {
-    std::list<SharedRingBufferReader<T>*> &readers = static_cast<std::list<SharedRingBufferReader<T>*> >(rb->readers);
-    for (std::list<SharedRingBufferReader<T>*>::const_iterator it = readers.begin(); it < readers.end(); ++it) {
-        (*it)->ahead.release(count);
+    std::list<ARingBufferReader<T>*>* readers = &rb->readers;
+    for (typename std::list<ARingBufferReader<T>*>::iterator it = readers->begin(); it != readers->end(); ++it) {
+        static_cast<SharedRingBufferReader<T>*>(*it)->ahead.signal(count);
     }
+
+    mutex.unlock();
 }
 
 #endif // SHAREDRINGBUFFERWRITER_H

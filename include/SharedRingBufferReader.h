@@ -4,10 +4,11 @@
 
 #include "ARingBufferReader.h"
 #include <mutex>
+#include "semaphore.h"
 
 
-template<class T> SharedRingBuffer;
-template<class T> SharedRingBufferWriter;
+template<class T> class SharedRingBuffer;
+template<class T> class SharedRingBufferWriter;
 
 template<class T>
 class SharedRingBufferReader : public ARingBufferReader<T>
@@ -16,7 +17,9 @@ class SharedRingBufferReader : public ARingBufferReader<T>
     friend class SharedRingBufferWriter<T>;
 
     public:
-        SharedRingBufferReader<T>(SharedRingBuffer<T> *ringBuffer);
+        SharedRingBufferReader<T>(SharedRingBuffer<T> *rb);
+
+        int available() const;
 
     protected:
         // TODO Replace with simple ARingBuffer<T>* data member?
@@ -27,30 +30,40 @@ class SharedRingBufferReader : public ARingBufferReader<T>
 
     private:
         SharedRingBuffer<T> *rb;
+
         std::mutex mutex;
-        Semaphore toRead;
+        semaphore ahead;
+        semaphore behind;
 };
 
 
 #include "SharedRingBuffer.h"
-#include "SharedRingBufferWriter.h"
 
 
 template<class T>
-SharedRingBufferReader<T>::SharedRingBufferReader(SharedRingBuffer<T> *ringBuffer) :
-    ARingBufferReader<T>(rb), rb(ringBuffer)
+SharedRingBufferReader<T>::SharedRingBufferReader(SharedRingBuffer<T> *rb) :
+    ARingBufferReader<T>(rb), rb(rb),
+    ahead(0), behind(rb->capacity)
 { }
+
+template<class T>
+int SharedRingBufferReader<T>::available() const
+{
+    return ahead.available();
+}
 
 template<class T>
 void SharedRingBufferReader<T>::acquireResources(int count)
 {
-
+    mutex.lock();
+    ahead.wait(count);
 }
 
 template<class T>
 void SharedRingBufferReader<T>::releaseResources(int count)
 {
-
+    behind.signal(count);
+    mutex.unlock();
 }
 
 #endif // SHAREDRINGBUFFERREADER_H
