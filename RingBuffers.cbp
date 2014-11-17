@@ -6,64 +6,100 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug">
-				<Option output="bin/Debug/RingBuffers" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Debug/" />
+			<Target title="RingBuffer_debug">
+				<Option output="bin/Debug/RingBuffers_demo" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/RingBuffer_demo_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
-					<Add directory="include" />
 				</Compiler>
 			</Target>
-			<Target title="Release">
-				<Option output="bin/Release/RingBuffers" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/Release/" />
+			<Target title="SharedRingBuffer_debug">
+				<Option output="bin/Debug/SharedRingBuffers_demo" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_demo_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-O2" />
-					<Add directory="include" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="RingBuffer_release">
+				<Option output="bin/Release/RingBuffers_demo" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/RingBuffer_demo_release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="SharedRingBuffer_release">
+				<Option output="bin/Release/SharedRingBuffers_demo" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_demo_release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
 				</Linker>
 			</Target>
 		</Build>
+		<VirtualTargets>
+			<Add alias="Debug" targets="RingBuffer_debug;SharedRingBuffer_debug;" />
+			<Add alias="Release" targets="RingBuffer_release;SharedRingBuffer_release;" />
+		</VirtualTargets>
 		<Compiler>
+			<Add option="-std=c++11" />
 			<Add option="-Wall" />
+			<Add directory="src/include" />
 		</Compiler>
-		<Unit filename="include/ARingBuffer.h">
-			<Option target="Release" />
+		<Unit filename="src/RingBuffer_demo.cpp">
+			<Option target="RingBuffer_debug" />
+			<Option target="RingBuffer_release" />
 		</Unit>
-		<Unit filename="include/ARingBufferReader.h">
-			<Option target="Release" />
+		<Unit filename="src/SharedRingBuffer_demo.cpp">
+			<Option target="SharedRingBuffer_debug" />
+			<Option target="SharedRingBuffer_release" />
 		</Unit>
-		<Unit filename="include/ARingBufferWriter.h">
-			<Option target="Release" />
+		<Unit filename="src/include/ARingBufferReader.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/IRingBufferAccessor.h">
-			<Option target="Release" />
+		<Unit filename="src/include/ARingBufferWriter.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/RingBuffer.h">
-			<Option target="Release" />
+		<Unit filename="src/include/IRingBufferAccessor.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/RingBufferReader.h">
-			<Option target="Release" />
+		<Unit filename="src/include/RingBuffer.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/RingBufferWriter.h">
-			<Option target="Release" />
+		<Unit filename="src/include/RingBufferReader.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/SharedRingBuffer.h">
-			<Option target="Release" />
+		<Unit filename="src/include/RingBufferWriter.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/SharedRingBufferReader.h">
-			<Option target="Release" />
+		<Unit filename="src/include/SharedRingBuffer.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="include/SharedRingBufferWriter.h">
-			<Option target="Release" />
+		<Unit filename="src/include/SharedRingBufferReader.h">
+			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
-		<Unit filename="test_RingBuffer.cpp" />
+		<Unit filename="src/include/SharedRingBufferWriter.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="src/include/semaphore.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="src/semaphore.cpp">
+			<Option target="SharedRingBuffer_debug" />
+			<Option target="SharedRingBuffer_release" />
+		</Unit>
 		<Extensions>
 			<code_completion />
 			<envvars />
