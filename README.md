@@ -21,7 +21,9 @@ Processes that have those two properties (namely divisibility into independent s
 
 A program running in a single thread will usually execute only one stage at a time. Maybe it will execute one stage after the other or maybe, in order to avoid cache misses, it will perform many executions of one stage and save their results in memory before moving onto the next stage which will use those results as input.
 
-A program that uses many threads, at most one per independent stage, however, can take advantage of the independence of the various stages to speed up the whole process to a possibly great extent. Indeed, in a pipeline where stage B follows stage A, while a thread is busy executing stage A to produce the input of B, another thread can execute B using the already-produced output of stage A without waiting on stage A to complete its run. Similarly, if a thread is busy executing B, another one can execute A to produce inputs for stage B without waiting on stage B to complete its run.
+A program that uses many threads however, can take advantage of the independence of the various stages to speed up the whole process to a possibly great extent. Indeed, in a pipeline where stage B follows stage A, while a thread is busy executing stage A to produce the input of B, another thread can execute B using the already-produced output of stage A without waiting on stage A to complete its run. Similarly, if a thread is busy executing B, another one can execute A to produce inputs for stage B without waiting on stage B to complete its run.
+
+There can be at most 1 thread per stage of the pipeline. A single thread can be responsible for multiple stages.
 
 The problem that arises then is that of the communication between the threads that run the stages. They should be able to
 
