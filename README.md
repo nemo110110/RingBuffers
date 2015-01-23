@@ -25,15 +25,15 @@ A program that uses many threads, at most one per independent stage, however, ca
 
 The problem that arises then is that of the communication between the threads that run the stages. They should be able to
 
- * check for availability of input somewhere in memory...
- ** ...waiting until input is available if necessary
- * read the input
+* check for availability of input somewhere in memory...
+  * ...waiting until input is available if necessary
+* read the input
 
 and to
 
- * check for availability of memory space to write their output...
- ** ...waiting until memory space is available if necessary
- * write their output
+* check for availability of memory space to write their output...
+  * ...waiting until memory space is available if necessary
+* write their output
 
 without unwanted behaviors such as
 
