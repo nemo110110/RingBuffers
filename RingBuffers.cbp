@@ -8,16 +8,25 @@
 		<Build>
 			<Target title="RingBuffer_debug">
 				<Option output="bin/Debug/RingBuffers_demo" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/RingBuffer_demo_debug/" />
+				<Option object_output="obj/RingBuffer_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
 			</Target>
-			<Target title="SharedRingBuffer_debug">
-				<Option output="bin/Debug/SharedRingBuffers_demo" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/SharedRingBuffer_demo_debug/" />
+			<Target title="SharedRingBuffer_demo1_debug">
+				<Option output="bin/Debug/SharedRingBuffers_demo1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="SharedRingBuffer_demo2_debug">
+				<Option output="bin/Debug/SharedRingBuffers_demo2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -26,7 +35,7 @@
 			</Target>
 			<Target title="RingBuffer_release">
 				<Option output="bin/Release/RingBuffers_demo" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/RingBuffer_demo_release/" />
+				<Option object_output="obj/RingBuffer_release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -36,9 +45,21 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
-			<Target title="SharedRingBuffer_release">
-				<Option output="bin/Release/SharedRingBuffers_demo" prefix_auto="1" extension_auto="1" />
-				<Option object_output="obj/SharedRingBuffer_demo_release/" />
+			<Target title="SharedRingBuffer_demo1_release">
+				<Option output="bin/Release/SharedRingBuffers_demo1" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="SharedRingBuffer_demo2_release">
+				<Option output="bin/Release/SharedRingBuffers_demo2" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/SharedRingBuffer_release/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -50,8 +71,8 @@
 			</Target>
 		</Build>
 		<VirtualTargets>
-			<Add alias="Debug" targets="RingBuffer_debug;SharedRingBuffer_debug;" />
-			<Add alias="Release" targets="RingBuffer_release;SharedRingBuffer_release;" />
+			<Add alias="Debug" targets="RingBuffer_debug;SharedRingBuffer_demo2_debug;SharedRingBuffer_demo1_debug;" />
+			<Add alias="Release" targets="RingBuffer_release;SharedRingBuffer_demo2_release;SharedRingBuffer_demo1_release;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-std=c++11" />
@@ -62,9 +83,13 @@
 			<Option target="RingBuffer_debug" />
 			<Option target="RingBuffer_release" />
 		</Unit>
-		<Unit filename="src/SharedRingBuffer_demo.cpp">
-			<Option target="SharedRingBuffer_debug" />
-			<Option target="SharedRingBuffer_release" />
+		<Unit filename="src/SharedRingBuffer_demo1.cpp">
+			<Option target="SharedRingBuffer_demo1_debug" />
+			<Option target="SharedRingBuffer_demo1_release" />
+		</Unit>
+		<Unit filename="src/SharedRingBuffer_demo2.cpp">
+			<Option target="SharedRingBuffer_demo2_debug" />
+			<Option target="SharedRingBuffer_demo2_release" />
 		</Unit>
 		<Unit filename="src/include/ARingBufferReader.h">
 			<Option target="&lt;{~None~}&gt;" />
@@ -97,8 +122,10 @@
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
 		<Unit filename="src/semaphore.cpp">
-			<Option target="SharedRingBuffer_debug" />
-			<Option target="SharedRingBuffer_release" />
+			<Option target="SharedRingBuffer_demo1_debug" />
+			<Option target="SharedRingBuffer_demo1_release" />
+			<Option target="SharedRingBuffer_demo2_debug" />
+			<Option target="SharedRingBuffer_demo2_release" />
 		</Unit>
 		<Extensions>
 			<code_completion />
